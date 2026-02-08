@@ -15,36 +15,39 @@
             </div>
         </div>
 
-        <!-- POLL -->
-        <div class="input">
-            <div class="votingToggle">
-                <div class="status-box {{ 'open' if is_poll_open else 'closed' }}">
-                    Current Status: {{ 'VOTING OPEN' if is_poll_open else 'VOTING CLOSED' }}
-                </div>
 
-                <form method="POST">
-                    <input type="hidden" name="action" value="toggle_poll">
-                    {% if is_poll_open %}
-                        <button type="submit" class="switch-btn btn-red">Stop Voting</button>
-                    {% else %}
-                        <button type="submit" class="switch-btn btn-green">Start Voting</button>
-                    {% endif %}
-                </form>
-            </div>
+        <div class="admin-container">
+            <div class="admin-controls">
+                <div class="votingToggle">
+                    <div class="status-box {{ 'open' if is_poll_open else 'closed' }}">
+                        Current Status: {{ 'VOTING OPEN' if is_poll_open else 'VOTING CLOSED' }}
+                    </div>
 
-            <div class="adminL2">
-                <div class="logout">
                     <form method="POST">
-                        <input type="hidden" name="action" value="logout">
-                        <button type="submit">Logout</button>
+                        <input type="hidden" name="action" value="toggle_poll">
+                        {% if is_poll_open %}
+                            <button type="submit" class="switch-btn btn-red">Stop Voting</button>
+                        {% else %}
+                            <button type="submit" class="switch-btn btn-green">Start Voting</button>
+                        {% endif %}
                     </form>
                 </div>
 
-                <div class="reset_db">
-                    <form method="POST">
-                        <input type="hidden" name="action" value="reset_db">
-                        <button type="submit">Reset Database</button>
-                    </form>
+                <div class="adminL2">
+                    <div class="reset_db">
+                        <form method="POST">
+                            <input type="hidden" name="action" value="reset_poll">
+                            <button type="submit" class="submit-btn">Reset Poll</button>
+                        </form>
+                    </div>
+
+                    <div class="logout">
+                        <form method="POST">
+                            <input type="hidden" name="action" value="logout">
+                            <button type="submit" class="submit-btn">Logout</button>
+                        </form>
+                    </div>
+
                 </div>
             </div>
         </div>
