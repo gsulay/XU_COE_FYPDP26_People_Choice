@@ -4,8 +4,10 @@
 # Folders
 env
 env_prod
+env_dev
 documentation
 seed_db
+qr_codes
 
 #Auxillary
 /test_scripts.ipynb
