@@ -1,6 +1,10 @@
 # Environment Variables
 /.env
 
+#Misc
+*.pyc
+__pycache__/
+
 # Folders
 env
 env_prod
