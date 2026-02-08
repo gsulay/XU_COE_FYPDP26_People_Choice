@@ -1,0 +1,11 @@
+# Environment Variables
+/.env
+
+# Folders
+env
+env_prod
+documentation
+seed_db
+
+#Auxillary
+/test_scripts.ipynb

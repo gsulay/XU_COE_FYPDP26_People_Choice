@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base_style.css')}}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FYPDP 2026: People's Choice</title>
+</head>
+<body>
+    <div class="bodyBG">
+        <div class="logo">
+                <img src="{{ url_for('static', filename='images/FYPDP_Logo.png')}}" alt="" class="logoImage">
+            <div class="logoTitle">
+                PEOPLE'S CHOICE AWARD
+            </div>
+        </div>
+
+        <div class="input">
+            <div class="baseMessage">
+                {{ message }}
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>

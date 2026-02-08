@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base_style.css')}}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FYPDP 2026: People's Choice</title>
+</head>
+<body>
+    <div class="bodyBG">
+        <div class="logo">
+                <img src="{{ url_for('static', filename='images/FYPDP_Logo.png')}}" alt="" class="logoImage">
+            <div class="logoTitle">
+                PEOPLE'S CHOICE AWARD
+            </div>
+        </div>
+
+        <!-- POLL -->
+        <div class="poll-container">
+            <form method="POST">
+                
+                {% for category in categories %}
+                    <div class="category-section">
+                        <div class="category-label-container">
+                            <h4>{{ category.criteria_name }}</h4>
+                        </div>
+                        
+                        <div class="radio-group">
+                            
+                            {% for study in category.studies %}
+                                <div class="study-option">
+                                    <label class="study-label">
+                                        <input type="radio" 
+                                            name="cat_{{ category.criteria_id }}" 
+                                            value="{{ study.study_id }}" 
+                                            required>
+                                        
+                                        <span>
+                                            {{ study.study_name }}
+                                        </span>
+                                    </label>
+                                </div>
+                            {% endfor %}
+                            
+                        </div>
+                    </div>
+                    <hr> 
+                {% endfor %}
+
+                <br>
+                <div class="poll-sbmt-btn">
+                    <button type="submit" class="submit-btn">Submit Final Votes</button>
+                </div>
+            </form>
+        </div>
+     
+    </div>
+</body>
+</html>

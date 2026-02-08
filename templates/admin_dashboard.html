@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base_style.css')}}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FYPDP 2026: People's Choice</title>
+</head>
+<body>
+    <div class="bodyBG">
+        <div class="logo">
+                <img src="{{ url_for('static', filename='images/FYPDP_Logo.png')}}" alt="" class="logoImage">
+            <div class="logoTitle">
+                PEOPLE'S CHOICE AWARD
+            </div>
+        </div>
+
+        <!-- POLL -->
+        <div class="input">
+            <div class="votingToggle">
+                <div class="status-box {{ 'open' if is_poll_open else 'closed' }}">
+                    Current Status: {{ 'VOTING OPEN' if is_poll_open else 'VOTING CLOSED' }}
+                </div>
+
+                <form method="POST">
+                    <input type="hidden" name="action" value="toggle_poll">
+                    {% if is_poll_open %}
+                        <button type="submit" class="switch-btn btn-red">Stop Voting</button>
+                    {% else %}
+                        <button type="submit" class="switch-btn btn-green">Start Voting</button>
+                    {% endif %}
+                </form>
+            </div>
+
+            <div class="adminL2">
+                <div class="logout">
+                    <form method="POST">
+                        <input type="hidden" name="action" value="logout">
+                        <button type="submit">Logout</button>
+                    </form>
+                </div>
+
+                <div class="reset_db">
+                    <form method="POST">
+                        <input type="hidden" name="action" value="reset_db">
+                        <button type="submit">Reset Database</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+     
+    </div>
+</body>
+</html>
