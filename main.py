@@ -87,15 +87,15 @@ with app.app_context():
 ### HOME
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    message = "See the Live Poll Below"
+    message_text = request.args.get('message', "See the Live Poll Below")
     
-    # Redirects to Results
     if request.method == 'POST':
         action = request.form.get('action')
         if action == 'results':
             return redirect(url_for('results'))
-    
-    return render_template('base.html', message=message)
+
+    # 2. Pass it to your HTML variable {{ message }}
+    return render_template('base.html', message=message_text)
 
 def check_ticket_status(ticket_id):
     ticket_status = TicketMeta.query.filter_by(ticket_id=ticket_id).first()
@@ -107,20 +107,20 @@ def vote(token):
     ticket = TicketMeta.query.filter_by(ticket_id=token).first()
     if not ticket:
         message = "Ticket not found. Please try again."
-        return render_template('base.html', message=message)
+        return redirect(url_for('home', message=message))
     
     # 2. Check if ticket is used (Status check)
     # Assuming 'check_ticket_status' returns False if used/invalid
     ticket_status = check_ticket_status(token)
     if ticket_status == False:
         message = "Ticket is invalid.\nYou may have already voted. If you believe this is wrong, please contact the admin."
-        return render_template('base.html', message=message)
+        return redirect(url_for('home', message=message))
     
     # 3. Check if Poll is Open
     # Note: Using your variable 'command_state' from your snippet
     if get_poll_status().command_state == False:
         message = "Voting is not yet open. Please try again later."
-        return render_template('base.html', message=message)
+        return redirect(url_for('home', message=message))
 
     # --- POST REQUEST: PROCESS THE VOTES ---
     if request.method == 'POST':
@@ -147,7 +147,7 @@ def vote(token):
             
             # Step D: Show Success Message
             success_message = "Your vote has been submitted successfully! Thank you."
-            return render_template('base.html', message=success_message)
+            return redirect(url_for('home', message=success_message))
 
         except Exception as e:
             db.session.rollback()
