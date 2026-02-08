@@ -85,10 +85,15 @@ with app.app_context():
     db.create_all()
 
 ### HOME
-@app.route('/')
-def hello_world():
-    message = "Please use the QR Code to start voting!"
-    return render_template('base.html', message=message)
+@app.route('/', methods=['GET', 'POST'])
+def home():
+    # Redirects to Results
+    if request.method == 'POST':
+        action = request.form.get('action')
+        if action == 'results':
+            return redirect(url_for('results'))
+    
+    return render_template('base.html')
 
 def check_ticket_status(ticket_id):
     ticket_status = TicketMeta.query.filter_by(ticket_id=ticket_id).first()
@@ -153,6 +158,40 @@ def vote(token):
     # Pass the token to the template so the form knows where to submit
     return render_template('poll.html', categories=categories, token=token)
 
+@app.route('/results')
+def results():
+    categories = CriteriaMeta.query.all()
+    results_data = {} # Renamed from charts_data
+
+    for cat in categories:
+        cat_name = cat.criteria_name
+        results_data[cat_name] = []
+        
+        # 1. Get all studies and counts first
+        studies_with_votes = []
+        max_votes = 0
+        
+        for study in cat.studies:
+            count = PollTable.query.filter_by(study_id=study.study_id).count()
+            if count > max_votes:
+                max_votes = count
+            studies_with_votes.append({'name': study.study_name, 'count': count})
+            
+        # 2. Calculate percentage relative to the leader (or total)
+        # We use relative to leader so the winner always looks like a full bar
+        for item in studies_with_votes:
+            if max_votes > 0:
+                percent = (item['count'] / max_votes) * 100
+            else:
+                percent = 0
+            
+            results_data[cat_name].append({
+                'name': item['name'],
+                'count': item['count'],
+                'percent': percent
+            })
+            
+    return render_template('results.html', results_data=results_data)
 
 
 ### ADMIN PORTION
@@ -197,8 +236,10 @@ def admin_dashboard():
             try:
                 # This wipes the votes, but keeps your categories/studies
                 deleted_rows = db.session.query(PollTable).delete()
+                rows = db.session.query(TicketMeta).update({TicketMeta.ticket_valid: True})
                 db.session.commit()
                 flash(f"Reset Complete: {deleted_rows} votes deleted.", "warning")
+                flash(f"Success: {rows} tickets re-activated!", "success")
             except Exception as e:
                 db.session.rollback()
                 flash(f"Error: {e}", "danger")
