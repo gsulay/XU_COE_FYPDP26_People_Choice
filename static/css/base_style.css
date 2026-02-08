@@ -129,11 +129,17 @@ span {
     width: 90%;
 }
 
+.home_container{
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
 .home_menu{
     width: 80vh;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     align-items: center;
     gap: 10px;
 }

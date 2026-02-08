@@ -87,13 +87,15 @@ with app.app_context():
 ### HOME
 @app.route('/', methods=['GET', 'POST'])
 def home():
+    message = "See the Live Poll Below"
+    
     # Redirects to Results
     if request.method == 'POST':
         action = request.form.get('action')
         if action == 'results':
             return redirect(url_for('results'))
     
-    return render_template('base.html')
+    return render_template('base.html', message=message)
 
 def check_ticket_status(ticket_id):
     ticket_status = TicketMeta.query.filter_by(ticket_id=ticket_id).first()
