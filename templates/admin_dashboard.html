@@ -17,6 +17,11 @@
 
 
         <div class="admin-container">
+            <div class="admin-message">
+                <h1>{{ message }}
+                </h1> 
+                <h1>Total Votes: {{ total_votes }}</h1>
+            </div>
             <div class="admin-controls">
                 <div class="votingToggle">
                     <div class="status-box {{ 'open' if is_poll_open else 'closed' }}">

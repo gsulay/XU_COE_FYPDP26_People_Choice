@@ -214,6 +214,9 @@ def login():
 # 3. THE PROTECTED ADMIN ROUTE
 @app.route('/admin', methods=['GET', 'POST'])
 def admin_dashboard():
+    # Default Message (None if no mesage to send)
+    message = request.args.get('message', "")
+
     # The Gatekeeper: Check if the key exists in the session
     if not session.get('logged_in'):
         return redirect(url_for('login'))
@@ -231,7 +234,8 @@ def admin_dashboard():
             db.session.commit()
             
             state = "OPEN" if poll_setting.command_state else "CLOSED"
-            flash(f"Poll is now {state}", "success")
+            message = f"Poll is now {state}"
+            flash(message, "success")
 
         # --- RESET POLL ---
         elif action == 'reset_poll':
@@ -240,11 +244,14 @@ def admin_dashboard():
                 deleted_rows = db.session.query(PollTable).delete()
                 rows = db.session.query(TicketMeta).update({TicketMeta.ticket_valid: True})
                 db.session.commit()
-                flash(f"Reset Complete: {deleted_rows} votes deleted.", "warning")
+                message = f"Reset Complete: {deleted_rows} votes deleted."
+                flash(message, "warning")
                 flash(f"Success: {rows} tickets re-activated!", "success")
             except Exception as e:
                 db.session.rollback()
-                flash(f"Error: {e}", "danger")
+
+                message = f"Error: {e}"
+                flash(message, "danger")
         
         # ---- RESET DB
         elif action == 'reset_db':
@@ -257,24 +264,27 @@ def admin_dashboard():
                 
                 # Recreates the tables (empty)
                 db.create_all()
-                flash("All tables recreated successfully. Database is now empty.")
+                message = "All tables recreated successfully. Database is now empty."
+                flash(message)
             except Exception as e:
                 db.session.rollback()
-                flash(f"Error: {e}", "danger")
+                message = f"Error: {e} "
+                flash(message, "danger")
         
         # --- Logout -----
         elif action == 'logout':
             session.pop('logged_in', None) # Remove the token
             return redirect(url_for('logout'))
         
-        return redirect(url_for('admin_dashboard'))
+        return redirect(url_for('admin_dashboard', message=message))
 
     # Pass the boolean value to the template
     # poll_setting.command_state holds the True/False value
     total_votes = PollTable.query.count()
     return render_template('admin_dashboard.html', 
                            is_poll_open=poll_setting.command_state, 
-                           total_votes=total_votes)
+                           total_votes=total_votes,
+                           message=message)
 
 # 4. THE LOGOUT ROUTE
 @app.route('/logout')
